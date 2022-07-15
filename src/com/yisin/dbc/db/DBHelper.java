@@ -29,7 +29,7 @@ public class DBHelper {
     public static String encode1 = "utf-8";
     public static String userName1 = "";
     public static String pwd1 = "";
-    
+
     public static String connName2 = "";
     public static String ip2 = "";
     public static String port2 = "";
@@ -37,17 +37,17 @@ public class DBHelper {
     public static String encode2 = "utf-8";
     public static String userName2 = "";
     public static String pwd2 = "";
-    
-    public static DBConnection getDBConn(int state){
-        if(state == 1){
+
+    public static DBConnection getDBConn(int state) {
+        if (state == 1) {
             return dbconn1;
         } else {
             return dbconn2;
         }
     }
-    
-    public static String getSchema(int state){
-        if(state == 1){
+
+    public static String getSchema(int state) {
+        if (state == 1) {
             return schema1;
         } else {
             return schema2;
@@ -60,7 +60,7 @@ public class DBHelper {
             HashMap<String, HashMap<String, String>> cfg = reader.getConfig(sections);
             if (cfg != null) {
                 int state = 1;
-                for(Map.Entry<String, HashMap<String, String>> entry : cfg.entrySet()){
+                for (Map.Entry<String, HashMap<String, String>> entry : cfg.entrySet()) {
                     setConfigValue(entry.getKey(), entry.getValue(), state++);
                 }
             }
@@ -70,7 +70,7 @@ public class DBHelper {
     }
 
     public static void setConfigValue(String name, HashMap<String, String> cfg, int state) {
-        if(state == 1){
+        if (state == 1) {
             connName1 = name;
             ip1 = cfg.get("host");
             port1 = cfg.get("port");
@@ -140,7 +140,9 @@ public class DBHelper {
                                 .setCharacterOctetLength(rs.getLong("character_octet_length"))
                                 .setExtra(rs.getString("extra")).setIsNullable(rs.getString("is_nullable"))
                                 .setPrivileges(rs.getString("privileges"))
-                                .setOrdinalPosition(rs.getInt("ordinal_position"));
+                                .setOrdinalPosition(rs.getInt("ordinal_position"))
+                                .setCharacterSetName(rs.getString("character_set_name"))
+                                .setCollationName(rs.getString("collation_name"));
                         columnList.add(column);
                     }
                 }
@@ -151,12 +153,12 @@ public class DBHelper {
         }
         return columnList;
     }
-    
+
     public static Map<String, List<DbTableColumn>> getMutilTableColumns(int state) {
-    	Map<String, List<DbTableColumn>> tableMap = new HashMap<String, List<DbTableColumn>>();
+        Map<String, List<DbTableColumn>> tableMap = new HashMap<String, List<DbTableColumn>>();
         String sql = "SELECT DISTINCT * FROM information_schema.COLUMNS WHERE table_schema = ? AND table_name in ("
-        		+ "SELECT table_name FROM information_schema.tables WHERE table_schema = ?"
-        		+ ") ORDER BY table_name, ORDINAL_POSITION";
+                + "SELECT table_name FROM information_schema.tables WHERE table_schema = ?"
+                + ") ORDER BY table_name, ORDINAL_POSITION";
         try {
             String schema = getSchema(state);
             PreparedStatement stmt = getDBConn(state).getPreparedStatement(sql);
@@ -167,36 +169,40 @@ public class DBHelper {
                 if (rs != null) {
                     MysqlDbColumn column = null;
                     List<DbTableColumn> columnList = null;
-                    String tempName = "", tname = "";;
+                    String tempName = "", tname = "";
+                    ;
                     while (rs.next()) {
                         column = new MysqlDbColumn();
                         tname = rs.getString("table_name");
-                        if(!tempName.equals(tname)){
-                        	if(columnList != null){
-                        		tableMap.put(tempName, columnList);
-                        	}
-                        	tempName = tname;
-                        	columnList = new ArrayList<DbTableColumn>();
+                        if (!tempName.equals(tname)) {
+                            if (columnList != null) {
+                                tableMap.put(tempName, columnList);
+                            }
+                            tempName = tname;
+                            columnList = new ArrayList<DbTableColumn>();
                         }
                         column.setTableSchema(schema)
-                        	.setTableName(tname)
-                    		.setColumnName(rs.getString("column_name"))
-                            .setColumnType(rs.getString("column_type"))
-                            .setColumnDefault(rs.getObject("column_default"))
-                            .setColumnKey(rs.getString("column_key"))
-                            .setColumnComment(rs.getString("column_comment"))
-                            .setDataType(rs.getString("data_type"))
-                            .setCharacterMaximumLength(rs.getLong("character_maximum_length"))
-                            .setCharacterOctetLength(rs.getLong("character_octet_length"))
-                            .setExtra(rs.getString("extra"))
-                            .setIsNullable(rs.getString("is_nullable"))
-                            .setPrivileges(rs.getString("privileges"))
-                            .setOrdinalPosition(rs.getInt("ordinal_position"));
+                                .setTableName(tname)
+                                .setColumnName(rs.getString("column_name"))
+                                .setColumnType(rs.getString("column_type"))
+                                .setColumnDefault(rs.getObject("column_default"))
+                                .setColumnKey(rs.getString("column_key"))
+                                .setColumnComment(rs.getString("column_comment"))
+                                .setDataType(rs.getString("data_type"))
+                                .setCharacterMaximumLength(rs.getLong("character_maximum_length"))
+                                .setCharacterOctetLength(rs.getLong("character_octet_length"))
+                                .setExtra(rs.getString("extra"))
+                                .setIsNullable(rs.getString("is_nullable"))
+                                .setPrivileges(rs.getString("privileges"))
+                                .setOrdinalPosition(rs.getInt("ordinal_position"))
+                                .setCharacterSetName(rs.getString("character_set_name"))
+                                .setCollationName(rs.getString("collation_name"));
+                        ;
                         columnList.add(column);
                     }
-                    if(columnList != null){
-                		tableMap.put(tempName, columnList);
-                	}
+                    if (columnList != null) {
+                        tableMap.put(tempName, columnList);
+                    }
                 }
                 getDBConn(state).close(rs, stmt);
             }
@@ -225,9 +231,9 @@ public class DBHelper {
                     vector.add(row);
                     row++;
                     try {
-                        if(column == null){
+                        if (column == null) {
                             column = resultSetMetaDataToVector(rs.getMetaData());
-                            size =  column.size();
+                            size = column.size();
                         }
                         for (int i = 1; i < size; i++) {
                             value = rs.getObject(CommonUtils.objectToString(column.get(i)));

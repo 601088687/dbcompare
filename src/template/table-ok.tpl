@@ -1,3 +1,3 @@
 <tr>
-	<td class="success" colspan="9">完成一致</td>
+	<td class="success" colspan="11">完成一致</td>
 </tr>

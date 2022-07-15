@@ -24,6 +24,9 @@ public class MysqlDbColumn extends DbTableColumn {
     private String columnComment; // 列描述
     private String privileges; // 列权限集合，以逗号隔开
 
+    private String characterSetName; //字段字符集
+    private String collationName; //排序规则
+
     public String getTableSchema() {
         return tableSchema;
     }
@@ -161,6 +164,24 @@ public class MysqlDbColumn extends DbTableColumn {
         return columnKey != null && columnKey.equalsIgnoreCase("PRI");
     }
 
+    public String getCharacterSetName() {
+        return characterSetName;
+    }
+
+    public MysqlDbColumn setCharacterSetName(String characterSetName) {
+        this.characterSetName = characterSetName;
+        return this;
+    }
+
+    public String getCollationName() {
+        return collationName;
+    }
+
+    public MysqlDbColumn setCollationName(String collationName) {
+        this.collationName = collationName;
+        return this;
+    }
+
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append(this.getClass().getName());
@@ -178,7 +199,9 @@ public class MysqlDbColumn extends DbTableColumn {
         sb.append("; extra=" + (extra == null ? "null" : extra.toString()));
         sb.append("; columnComment=" + (columnComment == null ? "null" : columnComment.toString()));
         sb.append("; privileges=" + (privileges == null ? "null" : privileges.toString()));
+        sb.append("; characterSetName=" + (characterSetName == null ? "null" : characterSetName.toString()));
+        sb.append("; collationName=" + (collationName == null ? "null" : collationName.toString()));
         return sb.toString();
     }
-    
+
 }

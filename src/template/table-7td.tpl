@@ -8,4 +8,6 @@
 	<th class="text" width="5%">PK/FK</th>
 	<th class="text" width="13%">缺省值</th>
 	<th class="text" width="6%">是否自增长</th>
+	<th class="text" width="6%">字符集</th>
+	<th class="text" width="6%">排序规则</th>
 </tr>

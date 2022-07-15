@@ -8,6 +8,8 @@
 	<td class="{same5}">{columnKey1}</td>
 	<td class="{same6}">{columnDefault1}</td>
 	<td class="{same7}">{extra1}</td>
+	<td class="{same8}">{characterSetName1}</td>
+	<td class="{same9}">{collationName1}</td>
 </tr>
 <tr class="two {class}">
 	<td class="dbname">{dbname2}</td>
@@ -18,4 +20,6 @@
 	<td class="{same5}">{columnKey2}</td>
 	<td class="{same6}">{columnDefault2}</td>
 	<td class="{same7}">{extra2}</td>
+	<td class="{same8}">{characterSetName2}</td>
+	<td class="{same9}">{collationName2}</td>
 </tr>
